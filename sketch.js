@@ -46,7 +46,8 @@ class Spot {
 }
 
 function setup() {
-    createCanvas(400, 400);
+    createCanvas(500, 500);
+    frameRate(60);
 
     console.log("A*");
 
@@ -136,13 +137,11 @@ function draw() {
         }
     }
 
-    for (let i = 0; i < closedSet.length; i++) {
-        closedSet[i].show(color(255, 0, 0));
-    }
+    // Color closed set cells
+    closedSet.forEach((cell) => cell.show(color(255, 0, 0)));
 
-    for (let i = 0; i < openSet.length; i++) {
-        openSet[i].show(color(0, 255, 0));
-    }
+    // Color open set cells
+    openSet.forEach((cell) => cell.show(color(0, 255, 0)));
 
     path = [];
     let temp = current;
@@ -152,7 +151,17 @@ function draw() {
         temp = temp.previous;
     }
 
-    for (let i = 0; i < path.length; i++) {
-        path[i].show(color(0, 0, 255));
+    // Color path cells
+    path.forEach((cell) => cell.show(color(0, 0, 255)));
+
+    // Color start cell
+    start.show(color(255, 0, 255));
+
+    // Color end cell
+    end.show(color(255, 255, 0));
+
+    if (mouseIsPressed) {
+        console.log("CLICK");
+        // noLoop();
     }
 }
