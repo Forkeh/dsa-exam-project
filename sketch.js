@@ -45,7 +45,13 @@ class Spot {
         }
         noStroke();
         rect(this.x * cellWidth, this.y * cellHeight, cellWidth - 1, cellHeight - 1);
-        console.log("SHOW");
+
+        // Only shows h-score on cells in openSet
+        if (openSet.includes(this)) {
+            fill(0);
+            textAlign(CENTER, CENTER); // Center the text
+            text(this.h, this.x * cellWidth + cellWidth / 2, this.y * cellHeight + cellHeight / 2);
+        }
     }
 
     addNeighbors(grid) {
@@ -150,6 +156,7 @@ function draw() {
     } else {
         // No solution
         console.log("No solution");
+        window.alert("No solution found 😥");
         noLoop();
     }
 
@@ -164,7 +171,9 @@ function draw() {
     closedSet.forEach((cell) => cell.show(color(255, 0, 0)));
 
     // Color open set cells
-    openSet.forEach((cell) => cell.show(color(0, 255, 0)));
+    openSet.forEach((cell) => {
+        cell.show(color(0, 255, 0));
+    });
 
     path = [];
     let temp = current;
@@ -202,6 +211,5 @@ function addEventListeners() {
         fpsValueDisplay.textContent = fpsSlider.value;
         framerate = Number(fpsSlider.value);
         console.log("framerate: ", framerate);
-        
     });
 }
