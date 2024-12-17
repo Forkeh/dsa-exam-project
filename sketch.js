@@ -1,17 +1,25 @@
 const cols = 25;
 const rows = 25;
 const grid = new Array(cols);
+let framerate = 30;
 
-let openSet = [];
-const closedSet = [];
+let openSet;
+let closedSet;
 let start, end;
 let cellWidth, cellHeight;
 let current;
-let path = [];
+let path;
 
 function heuristic(a, b) {
     // Manhatten heuristic
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+function removeFromOpenSet() {
+    const index = openSet.indexOf(current);
+    if (index > -1) {
+        openSet.splice(index, 1);
+    }
 }
 
 class Spot {
@@ -26,7 +34,7 @@ class Spot {
     constructor(col, row) {
         this.x = col;
         this.y = row;
-        this.wall = Math.random(1) < 0.2;
+        this.wall = Math.random(1) < 0.3;
     }
 
     show(color) {
@@ -52,8 +60,15 @@ class Spot {
 }
 
 function setup() {
+    console.log("SETUP");
+    addEventListeners();
+
     createCanvas(500, 500);
-    frameRate(60);
+    frameRate(framerate);
+
+    closedSet = [];
+    openSet = [];
+    path = [];
 
     cellWidth = width / cols;
     cellHeight = height / rows;
@@ -90,6 +105,7 @@ function setup() {
 
 function draw() {
     background(0);
+    frameRate(framerate);
 
     if (openSet.length > 0) {
         let winner = 0;
@@ -106,8 +122,7 @@ function draw() {
             console.log("Done");
         }
 
-        // TODO: Does this work?
-        openSet = openSet.filter((spot) => spot !== current);
+        removeFromOpenSet();
 
         closedSet.push(current);
 
@@ -136,7 +151,6 @@ function draw() {
         // No solution
         console.log("No solution");
         noLoop();
-        
     }
 
     // Color every cell
@@ -169,8 +183,25 @@ function draw() {
     // Color end cell
     end.show(color(255, 255, 0));
 
-    if (mouseIsPressed) {
-        console.log("CLICK");
-        // noLoop();
-    }
+    // if (mouseIsPressed) {
+    //     console.log("CLICK");
+    //     // noLoop();
+    // }
+}
+
+function addEventListeners() {
+    document.querySelector("#restart-btn").addEventListener("click", () => {
+        console.log("RESTART");
+        setup();
+        loop();
+    });
+
+    const fpsSlider = document.querySelector("#fps-slider");
+    const fpsValueDisplay = document.querySelector("#fps-value");
+    fpsSlider.addEventListener("input", () => {
+        fpsValueDisplay.textContent = fpsSlider.value;
+        framerate = Number(fpsSlider.value);
+        console.log("framerate: ", framerate);
+        
+    });
 }
