@@ -5,13 +5,13 @@ const grid = new Array(cols);
 let openSet = [];
 const closedSet = [];
 let start, end;
-let w, h;
+let cellWidth, cellHeight;
 let current;
 let path = [];
 
 function heuristic(a, b) {
     // Manhatten heuristic
-    return abs(a.x - b.x) + abs(a.y - b.y);
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
 class Spot {
@@ -22,15 +22,21 @@ class Spot {
     h = 0;
     neighbors = [];
     previous = null;
+    wall = false;
     constructor(col, row) {
         this.x = col;
         this.y = row;
+        this.wall = Math.random(1) < 0.2;
     }
 
     show(color) {
-        fill(color);
+        if (this.wall) {
+            fill(0);
+        } else {
+            fill(color);
+        }
         noStroke();
-        rect(this.x * w, this.y * h, w - 1, h - 1);
+        rect(this.x * cellWidth, this.y * cellHeight, cellWidth - 1, cellHeight - 1);
         console.log("SHOW");
     }
 
@@ -49,10 +55,8 @@ function setup() {
     createCanvas(500, 500);
     frameRate(60);
 
-    console.log("A*");
-
-    w = width / cols;
-    h = height / rows;
+    cellWidth = width / cols;
+    cellHeight = height / rows;
 
     // Create columns and rows
     for (let col = 0; col < cols; col++) {
@@ -76,6 +80,8 @@ function setup() {
     // Set start and end cells
     start = grid[0][0];
     end = grid[cols - 1][rows - 1];
+    start.wall = false;
+    end.wall = false;
 
     openSet.push(start);
 
@@ -109,7 +115,7 @@ function draw() {
         for (let i = 0; i < neighbors.length; i++) {
             const neighbor = neighbors[i];
 
-            if (!closedSet.includes(neighbor)) {
+            if (!closedSet.includes(neighbor) && !neighbor.wall) {
                 const tempG = current.g + 1;
 
                 if (openSet.includes(neighbor)) {
@@ -128,6 +134,9 @@ function draw() {
         }
     } else {
         // No solution
+        console.log("No solution");
+        noLoop();
+        
     }
 
     // Color every cell
