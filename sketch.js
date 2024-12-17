@@ -15,14 +15,7 @@ function heuristic(a, b) {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-function removeFromOpenSet() {
-    const index = openSet.indexOf(current);
-    if (index > -1) {
-        openSet.splice(index, 1);
-    }
-}
-
-class Spot {
+class Cell {
     x;
     y;
     f = 0;
@@ -47,7 +40,7 @@ class Spot {
         rect(this.x * cellWidth, this.y * cellHeight, cellWidth - 1, cellHeight - 1);
 
         // Only shows h-score on cells in openSet
-        if (openSet.includes(this)) {
+        if (openSet.cells.includes(this)) {
             fill(0);
             textAlign(CENTER, CENTER); // Center the text
             text(this.h, this.x * cellWidth + cellWidth / 2, this.y * cellHeight + cellHeight / 2);
@@ -65,6 +58,30 @@ class Spot {
     }
 }
 
+class PriorityQueue {
+    constructor() {
+        this.cells = [];
+    }
+
+    enqueue(cell) {
+        this.cells.push(cell);
+        this.cells.sort((a, b) => a.h - b.h);
+        console.table(this.cells);
+    }
+
+    dequeue() {
+        return this.cells.shift();
+    }
+
+    isEmpty() {
+        return this.cells.length === 0;
+    }
+
+    includes(cell) {
+        return this.cells.some((c) => c === cell);
+    }
+}
+
 function setup() {
     console.log("SETUP");
     addEventListeners();
@@ -73,7 +90,7 @@ function setup() {
     frameRate(framerate);
 
     closedSet = [];
-    openSet = [];
+    openSet = new PriorityQueue();
     path = [];
 
     cellWidth = width / cols;
@@ -84,14 +101,14 @@ function setup() {
         grid[col] = new Array(rows);
     }
 
-    // Populate each cell with spot
+    // Populate grid with cells
     for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
-            grid[col][row] = new Spot(col, row);
+            grid[col][row] = new Cell(col, row);
         }
     }
 
-    // Add neighbors for each spot
+    // Add neighbors for each cell
     for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
             grid[col][row].addNeighbors(grid);
@@ -104,7 +121,7 @@ function setup() {
     start.wall = false;
     end.wall = false;
 
-    openSet.push(start);
+    openSet.enqueue(start);
 
     console.log(grid);
 }
@@ -113,22 +130,14 @@ function draw() {
     background(0);
     frameRate(framerate);
 
-    if (openSet.length > 0) {
-        let winner = 0;
-
-        for (let i = 0; i < openSet.length; i++) {
-            if (openSet[i].f < openSet[winner].f) {
-                winner = i;
-            }
-        }
-        current = openSet[winner];
+    if (!openSet.isEmpty()) {
+        current = openSet.dequeue();
+        console.log(current);
 
         if (current === end) {
             noLoop();
             console.log("Done");
         }
-
-        removeFromOpenSet();
 
         closedSet.push(current);
 
@@ -145,12 +154,14 @@ function draw() {
                     }
                 } else {
                     neighbor.g = tempG;
-                    openSet.push(neighbor);
+                    openSet.enqueue(neighbor);
                 }
 
                 neighbor.h = heuristic(neighbor, end);
                 neighbor.f = neighbor.g + neighbor.h;
                 neighbor.previous = current;
+
+                openSet.enqueue(neighbor);
             }
         }
     } else {
@@ -171,7 +182,7 @@ function draw() {
     closedSet.forEach((cell) => cell.show(color(255, 0, 0)));
 
     // Color open set cells
-    openSet.forEach((cell) => {
+    openSet.cells.forEach((cell) => {
         cell.show(color(0, 255, 0));
     });
 
@@ -191,11 +202,6 @@ function draw() {
 
     // Color end cell
     end.show(color(255, 255, 0));
-
-    // if (mouseIsPressed) {
-    //     console.log("CLICK");
-    //     // noLoop();
-    // }
 }
 
 function addEventListeners() {
@@ -207,9 +213,9 @@ function addEventListeners() {
 
     const fpsSlider = document.querySelector("#fps-slider");
     const fpsValueDisplay = document.querySelector("#fps-value");
+
     fpsSlider.addEventListener("input", () => {
         fpsValueDisplay.textContent = fpsSlider.value;
         framerate = Number(fpsSlider.value);
-        console.log("framerate: ", framerate);
     });
 }
