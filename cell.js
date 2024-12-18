@@ -7,10 +7,10 @@ class Cell {
     neighbors = [];
     previous = null;
     wall = false;
-    constructor(col, row) {
+    constructor(col, row, obstacleChance) {
         this.x = col;
         this.y = row;
-        this.wall = Math.random(1) < 0.3;
+        this.wall = Math.random(1) < obstacleChance;
     }
 
     show(color) {

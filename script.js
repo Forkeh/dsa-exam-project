@@ -1,7 +1,8 @@
-let cols = 25;
-let rows = 25;
+let cols = 20;
+let rows = 20;
 const grid = new Array(cols);
 let framerate = 30;
+let obstacleChance = 0.25;
 
 let openSet;
 let closedSet;
@@ -11,28 +12,42 @@ let current;
 let path;
 
 function addEventListeners() {
-    document.querySelector("#restart-btn").addEventListener("click", () => {
-        console.log("RESTART");
-        setup();
-        loop();
-    });
-
+    // Selectors
+    const restartButton = document.querySelector("#restart-btn");
     const fpsSlider = document.querySelector("#fps-slider");
     const fpsValueDisplay = document.querySelector("#fps-value");
+    const gridSizeSelect = document.querySelector("#grid-size-select");
+    const obstaclesSelect = document.querySelector("#obstacles-select");
 
-    fpsSlider.addEventListener("input", () => {
+    // Event Handlers
+    function handleRestartLoop() {
+        setup();
+        loop();
+    }
+
+    function handleFpsChange() {
         fpsValueDisplay.textContent = fpsSlider.value;
         framerate = Number(fpsSlider.value);
-    });
+    }
 
-    document.querySelector("#grid-size-select").addEventListener("change", (event) => {
-        console.log("GRID SIZE");
+    function handleGridSizeChange(event) {
         const newGridSize = Number(event.target.value);
         cols = newGridSize;
         rows = newGridSize;
-        setup();
-        loop();
-    });
+        handleRestartLoop();
+    }
+
+    function handleObstaclesChange(event) {
+        const newObstacleChance = Number(event.target.value);
+        obstacleChance = newObstacleChance;
+        handleRestartLoop();
+    }
+
+    // Add Event Listeners
+    restartButton.addEventListener("click", handleRestartLoop);
+    fpsSlider.addEventListener("input", handleFpsChange);
+    gridSizeSelect.addEventListener("change", handleGridSizeChange);
+    obstaclesSelect.addEventListener("change", handleObstaclesChange);
 }
 
 function heuristic(a, b) {
@@ -63,7 +78,7 @@ function setup() {
     // Populate grid with cells
     for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
-            grid[col][row] = new Cell(col, row);
+            grid[col][row] = new Cell(col, row, obstacleChance);
         }
     }
 

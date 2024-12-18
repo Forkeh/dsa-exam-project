@@ -19,13 +19,23 @@
 <body>
   <button id="restart-btn">Restart</button>
 
+  <label for="fps-slider">Framerate</label>
   <input type="range" min="0" max="60" value="30" id="fps-slider"><span id="fps-value">30</span>
 
+  <label for="grid-size-select">Grid Size</label>
   <select name="grid-size" id="grid-size-select">
     <option value="20">20x20</option>
     <option value="30">30x30</option>
     <option value="40">40x40</option>
   </select>
+
+  <label for="obstacles-select">Obstacles amount</label>
+  <select name="obstacles" id="obstacles-select">
+    <option value="0.1">Few</option>
+    <option value="0.25" selected>Medium</option>
+    <option value="0.35">Many</option>
+  </select>
+
 
 </body>
 
