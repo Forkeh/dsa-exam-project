@@ -15,86 +15,6 @@ function heuristic(a, b) {
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-class Cell {
-    x;
-    y;
-    f = 0;
-    g = 0;
-    h = 0;
-    neighbors = [];
-    previous = null;
-    wall = false;
-    constructor(col, row) {
-        this.x = col;
-        this.y = row;
-        this.wall = Math.random(1) < 0.3;
-    }
-
-    show(color) {
-        if (this.wall) {
-            fill(0);
-        } else {
-            fill(color);
-        }
-        noStroke();
-        rect(this.x * cellWidth, this.y * cellHeight, cellWidth - 1, cellHeight - 1);
-
-        // Only shows h-score on cells in openSet
-        if (openSet.cells.includes(this)) {
-            fill(0);
-            textAlign(CENTER, CENTER); // Center the text
-            text(this.f, this.x * cellWidth + cellWidth / 2, this.y * cellHeight + cellHeight / 2);
-        }
-    }
-
-    addNeighbors(grid) {
-        if (this.x + 1 < cols) this.neighbors.push(grid[this.x + 1][this.y]);
-
-        if (this.x - 1 >= 0) this.neighbors.push(grid[this.x - 1][this.y]);
-
-        if (this.y + 1 < rows) this.neighbors.push(grid[this.x][this.y + 1]);
-
-        if (this.y - 1 >= 0) this.neighbors.push(grid[this.x][this.y - 1]);
-    }
-}
-
-class PriorityQueue {
-    constructor() {
-        this.cells = [];
-    }
-
-    enqueue(cell) {
-        const existingIndex = this.cells.findIndex((c) => c === cell);
-
-        if (existingIndex > -1) {
-            if (cell.f < this.cells[existingIndex].f) {
-                this.cells[existingIndex] = cell;
-            }
-        } else {
-            this.cells.push(cell);
-        }
-
-        this.cells.sort((a, b) => a.f - b.f);
-
-        console.log(
-            "Queue:",
-            this.cells.map((c) => ({ x: c.x, y: c.y, f: c.f }))
-        );
-    }
-
-    dequeue() {
-        return this.cells.shift();
-    }
-
-    isEmpty() {
-        return this.cells.length === 0;
-    }
-
-    includes(cell) {
-        return this.cells.some((c) => c === cell);
-    }
-}
-
 function setup() {
     console.log("SETUP");
     addEventListeners();
@@ -104,7 +24,6 @@ function setup() {
 
     closedSet = [];
     openSet = new PriorityQueue();
-    path = [];
 
     cellWidth = width / cols;
     cellHeight = height / rows;
