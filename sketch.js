@@ -43,7 +43,7 @@ class Cell {
         if (openSet.cells.includes(this)) {
             fill(0);
             textAlign(CENTER, CENTER); // Center the text
-            text(this.h, this.x * cellWidth + cellWidth / 2, this.y * cellHeight + cellHeight / 2);
+            text(this.f, this.x * cellWidth + cellWidth / 2, this.y * cellHeight + cellHeight / 2);
         }
     }
 
@@ -64,9 +64,22 @@ class PriorityQueue {
     }
 
     enqueue(cell) {
-        this.cells.push(cell);
-        this.cells.sort((a, b) => a.h - b.h);
-        console.table(this.cells);
+        const existingIndex = this.cells.findIndex((c) => c === cell);
+
+        if (existingIndex > -1) {
+            if (cell.f < this.cells[existingIndex].f) {
+                this.cells[existingIndex] = cell;
+            }
+        } else {
+            this.cells.push(cell);
+        }
+
+        this.cells.sort((a, b) => a.f - b.f);
+
+        console.log(
+            "Queue:",
+            this.cells.map((c) => ({ x: c.x, y: c.y, f: c.f }))
+        );
     }
 
     dequeue() {
@@ -132,7 +145,6 @@ function draw() {
 
     if (!openSet.isEmpty()) {
         current = openSet.dequeue();
-        console.log(current);
 
         if (current === end) {
             noLoop();
@@ -141,27 +153,20 @@ function draw() {
 
         closedSet.push(current);
 
-        const neighbors = current.neighbors;
-        for (let i = 0; i < neighbors.length; i++) {
-            const neighbor = neighbors[i];
+        for (const neighbor of current.neighbors) {
+            if (closedSet.includes(neighbor) || neighbor.wall) continue;
 
-            if (!closedSet.includes(neighbor) && !neighbor.wall) {
-                const tempG = current.g + 1;
+            const tempG = current.g + 1;
 
-                if (openSet.includes(neighbor)) {
-                    if (tempG < neighbor.g) {
-                        neighbor.g = tempG;
-                    }
-                } else {
-                    neighbor.g = tempG;
-                    openSet.enqueue(neighbor);
-                }
-
+            if (!openSet.includes(neighbor) || tempG < neighbor.g) {
+                neighbor.g = tempG;
                 neighbor.h = heuristic(neighbor, end);
                 neighbor.f = neighbor.g + neighbor.h;
                 neighbor.previous = current;
 
-                openSet.enqueue(neighbor);
+                if (!openSet.includes(neighbor)) {
+                    openSet.enqueue(neighbor);
+                }
             }
         }
     } else {
@@ -186,13 +191,14 @@ function draw() {
         cell.show(color(0, 255, 0));
     });
 
+    // Create path for coloring
     path = [];
     let temp = current;
-    path.push(temp);
-    while (temp.previous) {
-        path.push(temp.previous);
+
+    do {
+        path.push(temp);
         temp = temp.previous;
-    }
+    } while (temp);
 
     // Color path cells
     path.forEach((cell) => cell.show(color(0, 0, 255)));
