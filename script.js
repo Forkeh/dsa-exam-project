@@ -7,6 +7,8 @@ let obstacleChance = 0.25;
 let openSet;
 let closedSet;
 let start, end;
+let endX = cols - 1;
+let endY = rows - 1;
 let cellWidth, cellHeight;
 let current;
 let path;
@@ -91,7 +93,7 @@ function setup() {
 
     // Set start and end cells
     start = grid[0][0];
-    end = grid[cols - 1][rows - 1];
+    end = grid[endX][endY];
     start.wall = false;
     end.wall = false;
 
@@ -169,4 +171,27 @@ function draw() {
 
     // Color end cell
     end.show(color(255, 255, 0));
+}
+
+function mousePressed() {
+    // Loop through all cells to check if the mouse is inside any cell
+    for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows; row++) {
+            // Calculate coordinates for the center of each grid cell
+            let x = col * cellWidth + cellWidth / 2;
+            let y = row * cellHeight + cellHeight / 2;
+
+            // Calculate the distance between the mouse cursor and the center of the cell
+            let d = dist(mouseX, mouseY, x, y);
+
+            // If mouse is inside the cell, change the cell color by changing the value in the 2D array
+            if (d < cellWidth / 2) {
+                endX = col;
+                endY = row;
+                setup();
+                loop();
+                return; // Exit the loop once the cell is found
+            }
+        }
+    }
 }
