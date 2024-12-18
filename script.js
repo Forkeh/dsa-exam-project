@@ -177,15 +177,12 @@ function mousePressed() {
     // Loop through all cells to check if the mouse is inside any cell
     for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
-            // Calculate coordinates for the center of each grid cell
-            let x = col * cellWidth + cellWidth / 2;
-            let y = row * cellHeight + cellHeight / 2;
+            // Calculate coordinates for the top-left corner of each grid cell
+            let x = col * cellWidth;
+            let y = row * cellHeight;
 
-            // Calculate the distance between the mouse cursor and the center of the cell
-            let d = dist(mouseX, mouseY, x, y);
-
-            // If mouse is inside the cell, change the cell color by changing the value in the 2D array
-            if (d < cellWidth / 2) {
+            // Check if the mouse is inside the cell using a bounding box check
+            if (mouseX > x && mouseX < x + cellWidth && mouseY > y && mouseY < y + cellHeight) {
                 endX = col;
                 endY = row;
                 setup();
