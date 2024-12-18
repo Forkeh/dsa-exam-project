@@ -36,6 +36,8 @@ function addEventListeners() {
         const newGridSize = Number(event.target.value);
         cols = newGridSize;
         rows = newGridSize;
+        endX = cols - 1;
+        endY = rows - 1;
         handleRestartLoop();
     }
 
@@ -139,7 +141,11 @@ function draw() {
         noLoop();
     }
 
-    // Color every cell
+    colorCells();
+}
+
+function colorCells() {
+    // Color every cell with base color
     for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
             grid[col][row].show(color(255));
