@@ -6,11 +6,11 @@ let obstacleChance = 0.25;
 
 let openSet;
 let closedSet;
-let start, end;
-let endX = cols - 1;
-let endY = rows - 1;
+let startCell, endCell;
+let endCellX = cols - 1;
+let endCellY = rows - 1;
 let cellWidth, cellHeight;
-let current;
+let curCell;
 let path;
 
 function addEventListeners() {
@@ -36,8 +36,8 @@ function addEventListeners() {
         const newGridSize = Number(event.target.value);
         cols = newGridSize;
         rows = newGridSize;
-        endX = cols - 1;
-        endY = rows - 1;
+        endCellX = cols - 1;
+        endCellY = rows - 1;
         handleRestartLoop();
     }
 
@@ -71,16 +71,13 @@ function setup() {
     closedSet = [];
     openSet = new PriorityQueue();
 
-    cellWidth = width / cols;
-    cellHeight = height / rows;
+    cellWidth = canvas.width / cols;
+    cellHeight = canvas.height / rows;
 
-    // Create columns and rows
+    // Create columns + rows and populate with cells
     for (let col = 0; col < cols; col++) {
         grid[col] = new Array(rows);
-    }
 
-    // Populate grid with cells
-    for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
             grid[col][row] = new Cell(col, row, obstacleChance);
         }
@@ -94,12 +91,12 @@ function setup() {
     }
 
     // Set start and end cells
-    start = grid[0][0];
-    end = grid[endX][endY];
-    start.wall = false;
-    end.wall = false;
+    startCell = grid[0][0];
+    endCell = grid[endCellX][endCellY];
+    startCell.wall = false;
+    endCell.wall = false;
 
-    openSet.enqueue(start);
+    openSet.enqueue(startCell);
 
     console.log(grid);
 }
@@ -109,25 +106,25 @@ function draw() {
     frameRate(framerate);
 
     if (!openSet.isEmpty()) {
-        current = openSet.dequeue();
+        curCell = openSet.dequeue();
 
-        if (current === end) {
+        if (curCell === endCell) {
             noLoop();
             console.log("Done");
         }
 
-        closedSet.push(current);
+        closedSet.push(curCell);
 
-        for (const neighbor of current.neighbors) {
+        for (const neighbor of curCell.neighbors) {
             if (closedSet.includes(neighbor) || neighbor.wall) continue;
 
-            const tempG = current.g + 1;
+            const tempG = curCell.g + 1;
 
             if (!openSet.includes(neighbor) || tempG < neighbor.g) {
                 neighbor.g = tempG;
-                neighbor.h = heuristic(neighbor, end);
+                neighbor.h = heuristic(neighbor, endCell);
                 neighbor.f = neighbor.g + neighbor.h;
-                neighbor.previous = current;
+                neighbor.previous = curCell;
 
                 if (!openSet.includes(neighbor)) {
                     openSet.enqueue(neighbor);
@@ -162,7 +159,7 @@ function colorCells() {
 
     // Create path for coloring
     path = [];
-    let temp = current;
+    let temp = curCell;
 
     do {
         path.push(temp);
@@ -173,10 +170,10 @@ function colorCells() {
     path.forEach((cell) => cell.show(color(0, 0, 255)));
 
     // Color start cell
-    start.show(color(255, 0, 255));
+    startCell.show(color(255, 0, 255));
 
     // Color end cell
-    end.show(color(255, 255, 0));
+    endCell.show(color(255, 255, 0));
 }
 
 function mousePressed() {
@@ -189,8 +186,8 @@ function mousePressed() {
 
             // Check if the mouse is inside the cell using a bounding box check
             if (mouseX > x && mouseX < x + cellWidth && mouseY > y && mouseY < y + cellHeight) {
-                endX = col;
-                endY = row;
+                endCellX = col;
+                endCellY = row;
                 setup();
                 loop();
                 return; // Exit the loop once the cell is found
