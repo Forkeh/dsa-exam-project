@@ -1,5 +1,5 @@
-const cols = 25;
-const rows = 25;
+let cols = 25;
+let rows = 25;
 const grid = new Array(cols);
 let framerate = 30;
 
@@ -10,6 +10,31 @@ let cellWidth, cellHeight;
 let current;
 let path;
 
+function addEventListeners() {
+    document.querySelector("#restart-btn").addEventListener("click", () => {
+        console.log("RESTART");
+        setup();
+        loop();
+    });
+
+    const fpsSlider = document.querySelector("#fps-slider");
+    const fpsValueDisplay = document.querySelector("#fps-value");
+
+    fpsSlider.addEventListener("input", () => {
+        fpsValueDisplay.textContent = fpsSlider.value;
+        framerate = Number(fpsSlider.value);
+    });
+
+    document.querySelector("#grid-size-select").addEventListener("change", (event) => {
+        console.log("GRID SIZE");
+        const newGridSize = Number(event.target.value);
+        cols = newGridSize;
+        rows = newGridSize;
+        setup();
+        loop();
+    });
+}
+
 function heuristic(a, b) {
     // Manhatten heuristic
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
@@ -19,7 +44,9 @@ function setup() {
     console.log("SETUP");
     addEventListeners();
 
-    createCanvas(500, 500);
+    const canvasSize = 20 * cols;
+
+    createCanvas(canvasSize, canvasSize);
     frameRate(framerate);
 
     closedSet = [];
@@ -127,20 +154,4 @@ function draw() {
 
     // Color end cell
     end.show(color(255, 255, 0));
-}
-
-function addEventListeners() {
-    document.querySelector("#restart-btn").addEventListener("click", () => {
-        console.log("RESTART");
-        setup();
-        loop();
-    });
-
-    const fpsSlider = document.querySelector("#fps-slider");
-    const fpsValueDisplay = document.querySelector("#fps-value");
-
-    fpsSlider.addEventListener("input", () => {
-        fpsValueDisplay.textContent = fpsSlider.value;
-        framerate = Number(fpsSlider.value);
-    });
 }
