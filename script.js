@@ -3,6 +3,7 @@ let rows = 20;
 const grid = new Array(cols);
 let framerate = 30;
 let obstacleChance = 0.25;
+let iterations = 0;
 
 let openSet;
 let closedSet;
@@ -54,6 +55,12 @@ function addEventListeners() {
     obstaclesSelect.addEventListener("change", handleObstaclesChange);
 }
 
+function updateIterations() {
+    const iterationsCounter = document.querySelector("#iteration-counter");
+    iterations++;
+    iterationsCounter.textContent = iterations;
+}
+
 function heuristic(a, b) {
     // Manhatten heuristic
     return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
@@ -62,6 +69,7 @@ function heuristic(a, b) {
 function setup() {
     console.log("SETUP");
     addEventListeners();
+    iterations = 0;
 
     const canvasSize = 20 * cols;
 
@@ -107,6 +115,8 @@ function draw() {
 
     if (!openSet.isEmpty()) {
         curCell = openSet.dequeue();
+
+        updateIterations();
 
         if (curCell === endCell) {
             noLoop();
