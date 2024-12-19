@@ -136,7 +136,7 @@ function setup() {
 }
 
 function draw() {
-    background(0);
+    background(50);
     frameRate(framerate);
 
     if (!openList.isEmpty()) {
@@ -185,12 +185,12 @@ function colorCells() {
         }
     }
 
-    // Color closed set cells
-    closedList.forEach((cell) => cell.show(color(255, 0, 0)));
+    // Color closed list cells
+    closedList.forEach((cell) => cell.show(color(255, 50, 50)));
 
-    // Color open set cells
+    // Color open list cells
     openList.cells.forEach((cell) => {
-        cell.show(color(0, 255, 0));
+        cell.show(color(60, 255, 50));
     });
 
     // Create path for coloring
@@ -203,13 +203,13 @@ function colorCells() {
     } while (temp);
 
     // Color path cells
-    path.forEach((cell) => cell.show(color(0, 0, 255)));
+    path.forEach((cell) => cell.show(color(50, 65, 255)));
 
     // Color start cell
     startCell.show(color(255, 0, 255));
 
     // Color end cell
-    endCell.show(color(255, 255, 0));
+    endCell.show(color(255, 220, 50));
 }
 
 function mousePressed() {

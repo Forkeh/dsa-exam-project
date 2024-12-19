@@ -15,7 +15,7 @@ class Cell {
 
     show(color) {
         if (this.wall) {
-            fill(0);
+            fill(50);
         } else {
             fill(color);
         }
