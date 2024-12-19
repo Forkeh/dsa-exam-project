@@ -50,24 +50,30 @@ function addEventListeners() {
         handleRestartLoop();
     }
 
-    function handlePauseChange() {
-        const status = pauseButton.textContent;
-        console.log(status);
-        if (status === "Pause") {
-            noLoop();
-            pauseButton.textContent = "Start";
-        } else {
-            loop();
-            pauseButton.textContent = "Pause";
-        }
-    }
+    // Remove existing event listener before adding a new one
+    pauseButton.removeEventListener("click", handlePauseChange);
+    pauseButton.addEventListener("click", handlePauseChange);
 
+    // TODO: Remove all events, move event functions outside
     // Add Event Listeners
     restartButton.addEventListener("click", handleRestartLoop);
     fpsSlider.addEventListener("input", handleFpsChange);
     gridSizeSelect.addEventListener("change", handleGridSizeChange);
     obstaclesSelect.addEventListener("change", handleObstaclesChange);
-    pauseButton.addEventListener("click", handlePauseChange);
+    // pauseButton.addEventListener("click", handlePauseChange);
+}
+
+function handlePauseChange() {
+    const pauseButton = document.querySelector("#pause-btn");
+    const status = pauseButton.textContent;
+
+    if (status === "Pause") {
+        noLoop();
+        pauseButton.textContent = "Resume";
+    } else {
+        loop();
+        pauseButton.textContent = "Pause";
+    }
 }
 
 function updateIterations() {
