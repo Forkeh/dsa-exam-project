@@ -100,8 +100,8 @@ function setup() {
     closedSet = [];
     openSet = new PriorityQueue();
 
-    cellWidth = canvas.width / cols;
-    cellHeight = canvas.height / rows;
+    cellWidth = width / cols;
+    cellHeight = height / rows;
 
     // Create columns + rows and populate with cells
     for (let col = 0; col < cols; col++) {
