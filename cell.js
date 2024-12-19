@@ -19,24 +19,38 @@ class Cell {
         } else {
             fill(color);
         }
+        
         noStroke();
-        rect(this.x * cellWidth, this.y * cellHeight, cellWidth - 1, cellHeight - 1);
+        const cellXCoord = this.x * cellWidth;
+        const cellYCoord = this.y * cellHeight;
+        const cellW = cellWidth - 1;
+        const cellH = cellWidth - 1;
+        rect(cellXCoord, cellYCoord, cellW, cellH);
 
         // Only shows h-score on cells in openSet
         if (openList.cells.includes(this)) {
             fill(0);
             textAlign(CENTER, CENTER);
-            text(this.f, this.x * cellWidth + cellWidth / 2, this.y * cellHeight + cellHeight / 2);
+
+            // Calculate the center coordinates of the cell
+            const centerX = this.x * cellWidth + cellWidth / 2;
+            const centerY = this.y * cellHeight + cellHeight / 2;
+
+            text(this.f, centerX, centerY);
         }
     }
 
     addNeighbors(grid) {
+        // Check right
         if (this.x + 1 < cols) this.neighbors.push(grid[this.x + 1][this.y]);
 
+        // Check left
         if (this.x - 1 >= 0) this.neighbors.push(grid[this.x - 1][this.y]);
 
+        // Check down
         if (this.y + 1 < rows) this.neighbors.push(grid[this.x][this.y + 1]);
 
+        // Check up
         if (this.y - 1 >= 0) this.neighbors.push(grid[this.x][this.y - 1]);
     }
 }
