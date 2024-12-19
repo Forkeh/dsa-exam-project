@@ -1,12 +1,14 @@
 let cols = 20;
 let rows = 20;
 const grid = new Array(cols);
+
 let framerate = 30;
 let obstacleChance = 0.25;
 let iterations = 0;
 
-let openSet;
-let closedSet;
+let openList;
+let closedList;
+
 let startCell, endCell;
 let endCellX = cols - 1;
 let endCellY = rows - 1;
@@ -50,17 +52,19 @@ function addEventListeners() {
         handleRestartLoop();
     }
 
-    // Remove existing event listener before adding a new one
+    // Remove existing event listeners
     pauseButton.removeEventListener("click", handlePauseChange);
-    pauseButton.addEventListener("click", handlePauseChange);
+    restartButton.removeEventListener("click", handleRestartLoop);
+    fpsSlider.removeEventListener("input", handleFpsChange);
+    gridSizeSelect.removeEventListener("change", handleGridSizeChange);
+    obstaclesSelect.removeEventListener("change", handleObstaclesChange);
 
-    // TODO: Remove all events, move event functions outside
     // Add Event Listeners
     restartButton.addEventListener("click", handleRestartLoop);
     fpsSlider.addEventListener("input", handleFpsChange);
     gridSizeSelect.addEventListener("change", handleGridSizeChange);
     obstaclesSelect.addEventListener("change", handleObstaclesChange);
-    // pauseButton.addEventListener("click", handlePauseChange);
+    pauseButton.addEventListener("click", handlePauseChange);
 }
 
 function handlePauseChange() {
@@ -94,11 +98,12 @@ function setup() {
 
     const canvasSize = 20 * cols;
 
-    createCanvas(canvasSize, canvasSize);
+    const canvas = createCanvas(canvasSize, canvasSize);
+    canvas.parent("canvas-container");
     frameRate(framerate);
 
-    closedSet = [];
-    openSet = new PriorityQueue();
+    closedList = [];
+    openList = new PriorityQueue();
 
     cellWidth = width / cols;
     cellHeight = height / rows;
@@ -125,7 +130,7 @@ function setup() {
     startCell.wall = false;
     endCell.wall = false;
 
-    openSet.enqueue(startCell);
+    openList.enqueue(startCell);
 
     console.log(grid);
 }
@@ -134,8 +139,8 @@ function draw() {
     background(0);
     frameRate(framerate);
 
-    if (!openSet.isEmpty()) {
-        curCell = openSet.dequeue();
+    if (!openList.isEmpty()) {
+        curCell = openList.dequeue();
 
         updateIterations();
 
@@ -144,21 +149,21 @@ function draw() {
             console.log("Done");
         }
 
-        closedSet.push(curCell);
+        closedList.push(curCell);
 
         for (const neighbor of curCell.neighbors) {
-            if (closedSet.includes(neighbor) || neighbor.wall) continue;
+            if (closedList.includes(neighbor) || neighbor.wall) continue;
 
             const tempG = curCell.g + 1;
 
-            if (!openSet.includes(neighbor) || tempG < neighbor.g) {
+            if (!openList.includes(neighbor) || tempG < neighbor.g) {
                 neighbor.g = tempG;
                 neighbor.h = heuristic(neighbor, endCell);
                 neighbor.f = neighbor.g + neighbor.h;
                 neighbor.previous = curCell;
 
-                if (!openSet.includes(neighbor)) {
-                    openSet.enqueue(neighbor);
+                if (!openList.includes(neighbor)) {
+                    openList.enqueue(neighbor);
                 }
             }
         }
@@ -181,10 +186,10 @@ function colorCells() {
     }
 
     // Color closed set cells
-    closedSet.forEach((cell) => cell.show(color(255, 0, 0)));
+    closedList.forEach((cell) => cell.show(color(255, 0, 0)));
 
     // Color open set cells
-    openSet.cells.forEach((cell) => {
+    openList.cells.forEach((cell) => {
         cell.show(color(0, 255, 0));
     });
 

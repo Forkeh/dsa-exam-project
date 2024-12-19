@@ -23,7 +23,7 @@ class Cell {
         rect(this.x * cellWidth, this.y * cellHeight, cellWidth - 1, cellHeight - 1);
 
         // Only shows h-score on cells in openSet
-        if (openSet.cells.includes(this)) {
+        if (openList.cells.includes(this)) {
             fill(0);
             textAlign(CENTER, CENTER);
             text(this.f, this.x * cellWidth + cellWidth / 2, this.y * cellHeight + cellHeight / 2);
