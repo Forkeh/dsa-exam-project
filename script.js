@@ -21,6 +21,8 @@ function addEventListeners() {
     const fpsValueDisplay = document.querySelector("#fps-value");
     const gridSizeSelect = document.querySelector("#grid-size-select");
     const obstaclesSelect = document.querySelector("#obstacles-select");
+    const pauseButton = document.querySelector("#pause-btn");
+    pauseButton.textContent = "Pause";
 
     // Event Handlers
     function handleRestartLoop() {
@@ -48,11 +50,24 @@ function addEventListeners() {
         handleRestartLoop();
     }
 
+    function handlePauseChange() {
+        const status = pauseButton.textContent;
+        console.log(status);
+        if (status === "Pause") {
+            noLoop();
+            pauseButton.textContent = "Start";
+        } else {
+            loop();
+            pauseButton.textContent = "Pause";
+        }
+    }
+
     // Add Event Listeners
     restartButton.addEventListener("click", handleRestartLoop);
     fpsSlider.addEventListener("input", handleFpsChange);
     gridSizeSelect.addEventListener("change", handleGridSizeChange);
     obstaclesSelect.addEventListener("change", handleObstaclesChange);
+    pauseButton.addEventListener("click", handlePauseChange);
 }
 
 function updateIterations() {
