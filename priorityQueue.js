@@ -4,13 +4,9 @@ class PriorityQueue {
     }
 
     enqueue(cell) {
-        const existingIndex = this.cells.findIndex((c) => c === cell);
+        const hasCell = this.cells.includes(cell);
 
-        if (existingIndex > -1) {
-            if (cell.f < this.cells[existingIndex].f) {
-                this.cells[existingIndex] = cell;
-            }
-        } else {
+        if (!hasCell) {
             this.cells.push(cell);
         }
 

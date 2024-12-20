@@ -86,9 +86,9 @@ function updateIterations() {
     iterationsCounter.textContent = iterations;
 }
 
-function heuristic(a, b) {
+function heuristic(cellA, cellB) {
     // Manhatten heuristic
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    return Math.abs(cellA.x - cellB.x) + Math.abs(cellA.y - cellB.y);
 }
 
 function setup() {
@@ -161,16 +161,20 @@ function draw() {
         if (closedList.includes(neighbor) || neighbor.wall) continue;
 
         const tempG = curCell.g + 1;
+        console.log(tempG);
+        
 
-        if (!openList.includes(neighbor) || tempG < neighbor.g) {
+        if (!neighbor.g || tempG < neighbor.g) {
             neighbor.g = tempG;
             neighbor.h = heuristic(neighbor, endCell);
             neighbor.f = neighbor.g + neighbor.h;
             neighbor.previous = curCell;
 
-            if (!openList.includes(neighbor)) {
-                openList.enqueue(neighbor);
-            }
+            openList.enqueue(neighbor);
+
+            // if (!openList.includes(neighbor)) {
+            // openList.enqueue(neighbor);
+            // }
         }
     }
 

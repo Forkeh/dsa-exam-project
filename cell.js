@@ -2,7 +2,7 @@ class Cell {
     x;
     y;
     f = 0;
-    g = 0;
+    g = null;
     h = 0;
     neighbors = [];
     previous = null;
@@ -19,7 +19,7 @@ class Cell {
         } else {
             fill(color);
         }
-        
+
         noStroke();
         const cellXCoord = this.x * cellWidth;
         const cellYCoord = this.y * cellHeight;
