@@ -10,11 +10,21 @@ class PriorityQueue {
             this.cells.push(cell);
         }
 
-        this.cells.sort((a, b) => a.f - b.f);
+        this.cells.sort((a, b) => {
+             if (a.f < b.f) return -1;
+             if (a.f > b.f) return 1;
+
+             if (a.h < b.h) return -1;
+             if (a.h > b.h) return 1;
+
+             if (a.g > b.g) return -1;
+             if (a.g < b.g) return 1;
+            return 0;
+        });
 
         console.log(
             "Queue:",
-            this.cells.map((c) => ({ x: c.x, y: c.y, f: c.f }))
+            this.cells.map((c) => ({ g: c.g, f: c.f, x: c.x, y: c.y }))
         );
     }
 

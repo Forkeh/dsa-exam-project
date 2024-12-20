@@ -162,7 +162,6 @@ function draw() {
         if (closedList.includes(neighbor) || neighbor.wall) continue;
 
         const tempG = curCell.g + 1;
-        console.log(tempG);
 
         if (!neighbor.g || tempG < neighbor.g) {
             neighbor.g = tempG;
