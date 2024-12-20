@@ -16,50 +16,28 @@ let cellWidth, cellHeight;
 let curCell;
 let path;
 
-function addEventListeners() {
+let restartButton, fpsSlider, fpsValueDisplay, gridSizeSelect, obstaclesSelect, pauseButton;
+
+// Init
+document.addEventListener("DOMContentLoaded", () => {
     // Selectors
-    const restartButton = document.querySelector("#restart-btn");
-    const fpsSlider = document.querySelector("#fps-slider");
-    const fpsValueDisplay = document.querySelector("#fps-value");
-    const gridSizeSelect = document.querySelector("#grid-size-select");
-    const obstaclesSelect = document.querySelector("#obstacles-select");
-    const pauseButton = document.querySelector("#pause-btn");
+    restartButton = document.querySelector("#restart-btn");
+    fpsSlider = document.querySelector("#fps-slider");
+    fpsValueDisplay = document.querySelector("#fps-value");
+    gridSizeSelect = document.querySelector("#grid-size-select");
+    obstaclesSelect = document.querySelector("#obstacles-select");
+    pauseButton = document.querySelector("#pause-btn");
+
+    // Reset input/slider values (needed when refreshing page)
     pauseButton.textContent = "Pause";
+    fpsSlider.value = "30";
+    gridSizeSelect.value = "20";
+    obstaclesSelect.value = "0.25";
 
-    // Event Handlers
-    function handleRestartLoop() {
-        setup();
-        loop();
-    }
+    addEventListeners();
+});
 
-    function handleFpsChange() {
-        fpsValueDisplay.textContent = fpsSlider.value;
-        framerate = Number(fpsSlider.value);
-    }
-
-    function handleGridSizeChange(event) {
-        const newGridSize = Number(event.target.value);
-        cols = newGridSize;
-        rows = newGridSize;
-        endCellX = cols - 1;
-        endCellY = rows - 1;
-        handleRestartLoop();
-    }
-
-    function handleObstaclesChange(event) {
-        const newObstacleChance = Number(event.target.value);
-        obstacleChance = newObstacleChance;
-        handleRestartLoop();
-    }
-
-    // Remove existing event listeners
-    pauseButton.removeEventListener("click", handlePauseChange);
-    restartButton.removeEventListener("click", handleRestartLoop);
-    fpsSlider.removeEventListener("input", handleFpsChange);
-    gridSizeSelect.removeEventListener("change", handleGridSizeChange);
-    obstaclesSelect.removeEventListener("change", handleObstaclesChange);
-
-    // Add Event Listeners
+function addEventListeners() {
     restartButton.addEventListener("click", handleRestartLoop);
     fpsSlider.addEventListener("input", handleFpsChange);
     gridSizeSelect.addEventListener("change", handleGridSizeChange);
@@ -67,8 +45,32 @@ function addEventListeners() {
     pauseButton.addEventListener("click", handlePauseChange);
 }
 
+function handleRestartLoop() {
+    setup();
+    loop();
+}
+
+function handleFpsChange() {
+    fpsValueDisplay.textContent = fpsSlider.value;
+    framerate = Number(fpsSlider.value);
+}
+
+function handleGridSizeChange(event) {
+    const newGridSize = Number(event.target.value);
+    cols = newGridSize;
+    rows = newGridSize;
+    endCellX = cols - 1;
+    endCellY = rows - 1;
+    handleRestartLoop();
+}
+
+function handleObstaclesChange(event) {
+    const newObstacleChance = Number(event.target.value);
+    obstacleChance = newObstacleChance;
+    handleRestartLoop();
+}
+
 function handlePauseChange() {
-    const pauseButton = document.querySelector("#pause-btn");
     const status = pauseButton.textContent;
 
     if (status === "Pause") {
@@ -93,7 +95,6 @@ function heuristic(cellA, cellB) {
 
 function setup() {
     console.log("SETUP");
-    addEventListeners();
     iterations = 0;
 
     const canvasSize = 20 * cols;
@@ -162,7 +163,6 @@ function draw() {
 
         const tempG = curCell.g + 1;
         console.log(tempG);
-        
 
         if (!neighbor.g || tempG < neighbor.g) {
             neighbor.g = tempG;
