@@ -139,39 +139,39 @@ function draw() {
     background(50);
     frameRate(framerate);
 
-    if (!openList.isEmpty()) {
-        curCell = openList.dequeue();
-
-        updateIterations();
-
-        if (curCell === endCell) {
-            noLoop();
-            console.log("Done");
-        }
-
-        closedList.push(curCell);
-
-        for (const neighbor of curCell.neighbors) {
-            if (closedList.includes(neighbor) || neighbor.wall) continue;
-
-            const tempG = curCell.g + 1;
-
-            if (!openList.includes(neighbor) || tempG < neighbor.g) {
-                neighbor.g = tempG;
-                neighbor.h = heuristic(neighbor, endCell);
-                neighbor.f = neighbor.g + neighbor.h;
-                neighbor.previous = curCell;
-
-                if (!openList.includes(neighbor)) {
-                    openList.enqueue(neighbor);
-                }
-            }
-        }
-    } else {
+    if (openList.isEmpty()) {
         // No solution
         console.log("No solution");
         window.alert("No solution found 😥");
         noLoop();
+    } else {
+        curCell = openList.dequeue();
+    }
+
+    updateIterations();
+
+    if (curCell === endCell) {
+        noLoop();
+        console.log("Done");
+    }
+
+    closedList.push(curCell);
+
+    for (const neighbor of curCell.neighbors) {
+        if (closedList.includes(neighbor) || neighbor.wall) continue;
+
+        const tempG = curCell.g + 1;
+
+        if (!openList.includes(neighbor) || tempG < neighbor.g) {
+            neighbor.g = tempG;
+            neighbor.h = heuristic(neighbor, endCell);
+            neighbor.f = neighbor.g + neighbor.h;
+            neighbor.previous = curCell;
+
+            if (!openList.includes(neighbor)) {
+                openList.enqueue(neighbor);
+            }
+        }
     }
 
     colorCells();
