@@ -9,9 +9,9 @@ let iterations = 0;
 let openList;
 let closedList;
 
-let startCell, endCell;
-let endCellX = cols - 1;
-let endCellY = rows - 1;
+let startCell, goalCell;
+let goalCellX = cols - 1;
+let goalCellY = rows - 1;
 let cellWidth, cellHeight;
 let curCell;
 let path;
@@ -59,8 +59,8 @@ function handleGridSizeChange(event) {
     const newGridSize = Number(event.target.value);
     cols = newGridSize;
     rows = newGridSize;
-    endCellX = cols - 1;
-    endCellY = rows - 1;
+    goalCellX = cols - 1;
+    goalCellY = rows - 1;
     handleRestartLoop();
 }
 
@@ -125,11 +125,11 @@ function setup() {
         }
     }
 
-    // Set start and end cells
+    // Set start and goal cells
     startCell = grid[0][0];
-    endCell = grid[endCellX][endCellY];
+    goalCell = grid[goalCellX][goalCellY];
     startCell.wall = false;
-    endCell.wall = false;
+    goalCell.wall = false;
 
     openList.enqueue(startCell);
 
@@ -147,16 +147,15 @@ function draw() {
         noLoop();
     } else {
         curCell = openList.dequeue();
+        closedList.push(curCell);
     }
 
     updateIterations();
 
-    if (curCell === endCell) {
-        noLoop();
+    if (curCell === goalCell) {
         console.log("Done");
+        noLoop();
     }
-
-    closedList.push(curCell);
 
     for (const neighbor of curCell.neighbors) {
         if (closedList.includes(neighbor) || neighbor.wall) continue;
@@ -165,15 +164,11 @@ function draw() {
 
         if (!neighbor.g || tempG < neighbor.g) {
             neighbor.g = tempG;
-            neighbor.h = heuristic(neighbor, endCell);
+            neighbor.h = heuristic(neighbor, goalCell);
             neighbor.f = neighbor.g + neighbor.h;
             neighbor.previous = curCell;
 
             openList.enqueue(neighbor);
-
-            // if (!openList.includes(neighbor)) {
-            // openList.enqueue(neighbor);
-            // }
         }
     }
 
@@ -211,8 +206,8 @@ function colorCells() {
     // Color start cell
     startCell.show(color(255, 0, 255));
 
-    // Color end cell
-    endCell.show(color(255, 220, 50));
+    // Color goal cell
+    goalCell.show(color(255, 220, 50));
 }
 
 function mousePressed() {
@@ -225,8 +220,8 @@ function mousePressed() {
 
             // Check if the mouse is inside the cell using a bounding box check
             if (mouseX > x && mouseX < x + cellWidth && mouseY > y && mouseY < y + cellHeight) {
-                endCellX = col;
-                endCellY = row;
+                goalCellX = col;
+                goalCellY = row;
                 setup();
                 loop();
                 return; // Exit the loop once the cell is found

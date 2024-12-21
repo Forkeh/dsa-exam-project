@@ -33,8 +33,8 @@ class Cell {
             textAlign(CENTER, CENTER);
 
             // Calculate the center coordinates of the cell
-            const centerX = this.x * cellWidth + cellWidth / 2;
-            const centerY = this.y * cellHeight + cellHeight / 2;
+            const centerX = cellXCoord + cellWidth / 2;
+            const centerY = cellYCoord + cellHeight / 2;
 
             text(this.f, centerX, centerY);
         }
