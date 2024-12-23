@@ -2,7 +2,7 @@ class Cell {
     x;
     y;
     f = 0;
-    g = null;
+    g = 0;
     h = 0;
     neighbors = [];
     previous = null;

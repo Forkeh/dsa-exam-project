@@ -26,7 +26,8 @@ class PriorityQueue {
             // BFS (smallest g score)
             // if (a.g < b.g) return -1;
             // if (a.g > b.g) return 1;
-            // return 0;
+            
+            return 0;
         });
 
         console.log(

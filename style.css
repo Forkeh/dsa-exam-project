@@ -15,8 +15,8 @@ h1 {
 }
 
 h5 {
-  text-align: center;
-  font-weight: 300;
+    text-align: center;
+    font-weight: 300;
 }
 
 button {
@@ -53,20 +53,28 @@ select {
     gap: 0.3em;
 }
 
-.iterations-container {
+.info-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.3em;
+    justify-content: space-around;
+    margin: auto auto;
+    gap: 2em;
     margin-top: 2em;
     margin-bottom: 2em;
+    width: 20em;
 }
 
-.iterations-container > :nth-child(1) {
-    font-size: smaller;
+#iteration-counter {
+    text-align: center;
+    padding-top: 0.3em;
 }
 
-.iterations-container > :nth-child(2) {
+#current-cell-values {
+    display: flex;
+    flex-direction: column;
+}
+
+#current-cell-values span {
     font-weight: bolder;
 }
 

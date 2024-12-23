@@ -88,6 +88,17 @@ function updateIterations() {
     iterationsCounter.textContent = iterations;
 }
 
+function updateCurrentCellInfo(cell) {
+    const currentCell = document.querySelector("#current-cell-values");
+    const html = /*html*/ `
+        <div><span>F: </span>${cell.f}</div>
+        <div><span>H: </span>${cell.h}</div>
+        <div><span>G: </span>${cell.g}</div>
+    `;
+
+    currentCell.innerHTML = html;
+}
+
 function heuristic(cellA, cellB) {
     // Manhatten heuristic
     return Math.abs(cellA.x - cellB.x) + Math.abs(cellA.y - cellB.y);
@@ -151,10 +162,13 @@ function draw() {
     }
 
     updateIterations();
+    updateCurrentCellInfo(curCell);
 
     if (curCell === goalCell) {
-        console.log("Done");
+        console.log("Found solution");
         noLoop();
+        colorCells();
+        return;
     }
 
     for (const neighbor of curCell.neighbors) {
