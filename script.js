@@ -46,6 +46,7 @@ function addEventListeners() {
 }
 
 function handleRestartLoop() {
+    pauseButton.textContent = "Pause";
     setup();
     loop();
 }
@@ -108,6 +109,8 @@ function setup() {
     console.log("SETUP");
     iterations = 0;
 
+    pauseButton.removeAttribute("disabled");
+
     const canvasSize = 20 * cols;
 
     const canvas = createCanvas(canvasSize, canvasSize);
@@ -166,6 +169,7 @@ function draw() {
 
     if (curCell === goalCell) {
         console.log("Found solution");
+        pauseButton.setAttribute("disabled", true);
         noLoop();
         colorCells();
         return;
