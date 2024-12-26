@@ -1,7 +1,8 @@
 
 # A* (A-Star) - Pathfinding Algorithm Visualizer
 
-![image of visualizer](screenshot.PNG)
+
+<img src="screenshot.PNG" width="400" />
 
 A visualizer for the A* pathfinding algorithm. 
 
