@@ -7,7 +7,7 @@ let obstacleChance = 0.25;
 let iterations = 0;
 
 let openList;
-let closedSet;
+const closedSet = new Set();
 
 let startCell, goalCell;
 let goalCellX = cols - 1;
@@ -117,7 +117,7 @@ function setup() {
     canvas.parent("canvas-container");
     frameRate(framerate);
 
-    closedSet = new Set();
+    closedSet.clear();
     openList = new PriorityQueue();
 
     cellWidth = width / cols;
