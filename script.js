@@ -7,7 +7,7 @@ let obstacleChance = 0.25;
 let iterations = 0;
 
 let openList;
-let closedList;
+let closedSet;
 
 let startCell, goalCell;
 let goalCellX = cols - 1;
@@ -117,7 +117,7 @@ function setup() {
     canvas.parent("canvas-container");
     frameRate(framerate);
 
-    closedList = [];
+    closedSet = new Set();
     openList = new PriorityQueue();
 
     cellWidth = width / cols;
@@ -161,7 +161,7 @@ function draw() {
         noLoop();
     } else {
         curCell = openList.dequeue();
-        closedList.push(curCell);
+        closedSet.add(curCell);
     }
 
     updateIterations();
@@ -176,7 +176,7 @@ function draw() {
     }
 
     for (const neighbor of curCell.neighbors) {
-        if (closedList.includes(neighbor) || neighbor.wall) continue;
+        if (closedSet.has(neighbor) || neighbor.wall) continue;
 
         const tempG = curCell.g + 1;
 
@@ -201,8 +201,8 @@ function colorCells() {
         }
     }
 
-    // Color closed list cells
-    closedList.forEach((cell) => cell.show(color(255, 50, 50)));
+    // Color closed set cells
+    closedSet.forEach((cell) => cell.show(color(255, 50, 50)));
 
     // Color open list cells
     openList.cells.forEach((cell) => {
