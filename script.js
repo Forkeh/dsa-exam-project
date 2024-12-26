@@ -158,6 +158,7 @@ function draw() {
         // No solution
         console.log("No solution");
         window.alert("No solution found 😥");
+        pauseButton.setAttribute("disabled", true);
         noLoop();
     } else {
         curCell = openList.dequeue();
