@@ -10,8 +10,8 @@ let openList;
 const closedSet = new Set();
 
 let startCell, goalCell;
-let goalCellX = cols - 1;
-let goalCellY = rows - 1;
+let goalCellCol = cols - 1;
+let goalCellRow = rows - 1;
 let cellWidth, cellHeight;
 let curCell;
 let path;
@@ -60,8 +60,8 @@ function handleGridSizeChange(event) {
     const newGridSize = Number(event.target.value);
     cols = newGridSize;
     rows = newGridSize;
-    goalCellX = cols - 1;
-    goalCellY = rows - 1;
+    goalCellCol = cols - 1;
+    goalCellRow = rows - 1;
     handleRestartLoop();
 }
 
@@ -141,7 +141,7 @@ function setup() {
 
     // Set start and goal cells
     startCell = grid[0][0];
-    goalCell = grid[goalCellX][goalCellY];
+    goalCell = grid[goalCellCol][goalCellRow];
     startCell.wall = false;
     goalCell.wall = false;
 
@@ -156,7 +156,6 @@ function draw() {
 
     if (openList.isEmpty()) {
         // No solution
-        console.log("No solution");
         window.alert("No solution found 😥");
         pauseButton.setAttribute("disabled", true);
         noLoop();
@@ -234,15 +233,14 @@ function mousePressed() {
     for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
             // Calculate coordinates for the top-left corner of each grid cell
-            let x = col * cellWidth;
-            let y = row * cellHeight;
+            const x = col * cellWidth;
+            const y = row * cellHeight;
 
             // Check if the mouse is inside the cell using a bounding box check
             if (mouseX > x && mouseX < x + cellWidth && mouseY > y && mouseY < y + cellHeight) {
-                goalCellX = col;
-                goalCellY = row;
-                setup();
-                loop();
+                goalCellCol = col;
+                goalCellRow = row;
+                handleRestartLoop();
                 return; // Exit the loop once the cell is found
             }
         }

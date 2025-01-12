@@ -11,19 +11,19 @@ class PriorityQueue {
         }
 
         this.cells.sort((a, b) => {
-            // Smallest f score
+            // Smallest f cost
             if (a.f < b.f) return -1;
             if (a.f > b.f) return 1;
 
-            // Smallest h score
+            // Smallest h cost
             if (a.h < b.h) return -1;
             if (a.h > b.h) return 1;
 
-            // Largest g score
+            // Largest g cost
             if (a.g > b.g) return -1;
             if (a.g < b.g) return 1;
 
-            // BFS (smallest g score)
+            // BFS (smallest g cost)
             // if (a.g < b.g) return -1;
             // if (a.g > b.g) return 1;
             

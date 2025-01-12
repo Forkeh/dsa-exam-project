@@ -27,16 +27,17 @@ class Cell {
         const cellH = cellWidth - 1;
         rect(cellXCoord, cellYCoord, cellW, cellH);
 
-        // Only shows h-score on cells in openSet
+        // Only shows h-cost on cells in openSet
         if (openList.cells.includes(this)) {
-            fill(0);
-            textAlign(CENTER, CENTER);
 
             // Calculate the center coordinates of the cell
             const centerX = cellXCoord + cellWidth / 2;
             const centerY = cellYCoord + cellHeight / 2;
-
+            
+            // Create text
+            fill(0);
             text(this.f, centerX, centerY);
+            textAlign(CENTER, CENTER);
         }
     }
 
